@@ -20,11 +20,18 @@ export default function Nav() {
         </li>
       )}
       {!user && (
-        <li>
-          <NavLink to='/login' exact>
-            Login
-          </NavLink>
-        </li>
+        <>
+          <li>
+            <NavLink to='/login' exact>
+              Login
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to='/signup' exact>
+              Signup
+            </NavLink>
+          </li>
+        </>
       )}
     </ul>
   )
