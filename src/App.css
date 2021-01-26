@@ -20,6 +20,10 @@ html {
   font-size: 1.6rem;
 }
 
+.font-medium {
+  font-size: 2rem;
+}
+
 .font-large {
   font-size: 3.6rem;
 }

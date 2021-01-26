@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Post from '../components/Post'
+
+import { UserContext } from '../context/UserContext'
 
 export default function SinglePost({ match, history }) {
   const { id } = match.params
+
+  const { user, setUser } = useContext(UserContext)
+  console.log('context', user, setUser)
 
   const [post, setPost] = useState({})
   const [loading, setLoading] = useState(true)
@@ -48,6 +53,7 @@ export default function SinglePost({ match, history }) {
     console.log('edit', data)
   }
 
+  // eslint-disable-next-line
   useEffect(() => fetchPost(), [])
 
   return (
