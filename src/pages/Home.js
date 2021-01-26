@@ -17,9 +17,9 @@ export default function Home() {
   return (
     <div className='Home'>
       {posts.map((post) => (
-        <Link to={`/${post.id}`}>
+        <Link key={post.id} to={`/${post.id}`}>
           <Post
-            key={post.id}
+            key={`post-${post.id}`}
             likes={post.likes}
             description={post.description}
             url={post.image && post.image.url}
