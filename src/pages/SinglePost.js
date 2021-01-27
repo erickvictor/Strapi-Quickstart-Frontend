@@ -2,12 +2,25 @@ import { useContext, useEffect, useState } from 'react'
 import Post from '../components/Post'
 
 import { UserContext } from '../context/UserContext'
+import { LikesContext } from '../context/LikesContext'
 
 export default function SinglePost({ match, history }) {
   const { id } = match.params
 
   const { user, setUser } = useContext(UserContext)
   console.log('context', user, setUser)
+
+  const { likesGiven, reloader } = useContext(LikesContext)
+
+  const isPostAlreadyLiked = (() => {
+    return (
+      likesGiven &&
+      likesGiven.find((like) => like.post && like.post.id === parseInt(id))
+    )
+  })()
+
+  console.log('isPostAlreadyLiked', isPostAlreadyLiked)
+  console.log('likesGiven', likesGiven)
 
   const [post, setPost] = useState({})
   const [loading, setLoading] = useState(true)
@@ -57,6 +70,42 @@ export default function SinglePost({ match, history }) {
     console.log('edit', data)
   }
 
+  const handleLike = async () => {
+    try {
+      // eslint-disable-next-line
+      const response = await fetch('http://localhost:1337/likes', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.jwt}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          post: parseInt(id)
+        })
+      })
+      fetchPost()
+      reloader()
+    } catch (err) {
+      console.log('Exception', err)
+    }
+  }
+
+  const handleRemoveLike = async () => {
+    try {
+      // eslint-disable-next-line
+      const response = await fetch(`http://localhost:1337/likes/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user.jwt}`
+        }
+      })
+      fetchPost()
+      reloader()
+    } catch (err) {
+      console.log('Exception', err)
+    }
+  }
+
   // eslint-disable-next-line
   useEffect(() => fetchPost(), [])
 
@@ -72,6 +121,18 @@ export default function SinglePost({ match, history }) {
                 description={post.description}
                 url={post.image && post.image.url}
               />
+
+              {user && (
+                <>
+                  {!isPostAlreadyLiked && (
+                    <button onClick={handleLike}>Like</button>
+                  )}
+                  {isPostAlreadyLiked && (
+                    <button onClick={handleRemoveLike}>Remove Like</button>
+                  )}
+                </>
+              )}
+
               {user && (
                 <>
                   <button onClick={handleDelete}>Delete this Post</button>
