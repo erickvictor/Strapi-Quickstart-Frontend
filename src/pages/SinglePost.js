@@ -29,7 +29,10 @@ export default function SinglePost({ match, history }) {
 
   const handleDelete = async () => {
     const response = await fetch(`http://localhost:1337/posts/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user.jwt}`
+      }
     })
     const data = await response.json()
     console.log(data)
@@ -42,7 +45,8 @@ export default function SinglePost({ match, history }) {
     const response = await fetch(`http://localhost:1337/posts/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.jwt}`
       },
       body: JSON.stringify({
         description
@@ -68,17 +72,21 @@ export default function SinglePost({ match, history }) {
                 description={post.description}
                 url={post.image && post.image.url}
               />
-              <button onClick={handleDelete}>Delete this Post</button>
-              <button onClick={() => setEdit(true)}>Edit this Post</button>
-              {edit && (
-                <form onSubmit={handleEditSubmit}>
-                  <input
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder='New description'
-                  />
-                  <button>Confirm</button>
-                </form>
+              {user && (
+                <>
+                  <button onClick={handleDelete}>Delete this Post</button>
+                  <button onClick={() => setEdit(true)}>Edit this Post</button>
+                  {edit && (
+                    <form onSubmit={handleEditSubmit}>
+                      <input
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder='New description'
+                      />
+                      <button>Confirm</button>
+                    </form>
+                  )}
+                </>
               )}
             </>
           )}
